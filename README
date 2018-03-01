@@ -8,7 +8,7 @@ The code performs the following operations:
   * Compute the intrinsic dimension of the data by using the TWO-NN algorithm (Facco et al , Sci. Rep.  2017).
   * Compute the logarithm of the density for each point and its error by the PAk approach (Rodriguez et al, 2018) or by the standard k-NN.
   * Extract information about the topography by analizing the border densities between clusters for distinguishing 
-    statistical fluctuations from real regions of high density (d'Errico, 2018).
+    statistical fluctuations from real regions of high density (d'Errico, 2018, https://arxiv.org/abs/1802.10549).
 
 In its present implementation, the code uses one of the ORDERPACK modules written by Michel Olagnon (http://www.physics.rutgers.edu/~diablo/)
 
@@ -87,4 +87,4 @@ Bibliography:
 
   4) d'Errico, M., Facco, E., Laio, A. & Rodriguez, A. (2018) Automatic
   topography of high-dimensional data sets by non-parametric Density Peak
-  clustering (Submitted).
+  clustering (Submitted, https://arxiv.org/abs/1802.10549).
