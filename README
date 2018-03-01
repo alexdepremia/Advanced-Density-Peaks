@@ -1,0 +1,90 @@
+DPA carries on a density topography analisys by means of an unsupervised version of  density peaks clustering (Rodriguez and Laio, Science, 2014). 
+The code reads a standard input (few examples are provided in the Examples directory).  
+Run the program in order to see an interactive description of the input.
+Please note that this is a a preliminary version: do not hesitate in comunicating errors/bugs in the code.
+The code performs the following operations:
+
+  * Compute Euclidean distances (with/without periodic coordinates i.e. angles) or read distances computed with an external code.
+  * Compute the intrinsic dimension of the data by using the TWO-NN algorithm (Facco et al , Sci. Rep.  2017).
+  * Compute the logarithm of the density for each point and its error by the PAk approach (Rodriguez et al, 2018) or by the standard k-NN.
+  * Extract information about the topography by analizing the border densities between clusters for distinguishing 
+    statistical fluctuations from real regions of high density (d'Errico, 2018).
+
+In its present implementation, the code uses one of the ORDERPACK modules written by Michel Olagnon (http://www.physics.rutgers.edu/~diablo/)
+
+Compiling can be done by executing the "./compile.sh" script. The executable appears in ./bin folder as "DPA.x".
+In the "examples" folders there are some toy cases. In standard linux machines they can be run with the
+"make_examples.sh" script and plotted (if you have installed gnuplot) with the "plot_examples.sh" script.
+
+The program reads as input files of three kinds:
+                               (1) A symetric distance file written as e1,e2,d(e1,e2). Element indexes must start from 1.
+                               (2) A coordinates file, in which each row corresponds to a data point, each column to a coordinate.
+                                   In this case the distance matrix is computed with the Euclidean metric (optionally periodic 
+                                   boundary conditions can be considered).
+                               (3) A distance file written as e1,e2,d(e1,e2) with the nearest neighbors for each data point.
+                                   Distances that are not specified are considered very large.
+
+The ouput files are:
+
+  * Point.info: Seven columns, (1) index of the point
+                               (2) k employed for computing the density at this point
+                               (3) distance from the k-th  neighbor
+                               (4) logarithm of the density of the point (plus a constant factor)
+                               (5) Error of the logarithm of the density at the point 
+                               (6) The cluster at which the point is assigned
+                               (7) The cluster at which the point is assigned, but 0 if the point belongs to the halo
+
+  * Topography.info: Two sections:
+
+                     CENTERS: Six columns,
+                             (1) index of the cluster
+                             (2) logarithm of the density at the center of the cluster
+                             (3) Error of the logarithm of the density at the center of the cluster
+                             (4) Point index of the center of the cluster
+                             (5) Cluster population
+                             (6) Cluster population without halo points
+
+                     SADDLES: Four columns,
+                             (1 & 2) index of the clusters that define the saddle point
+                             (3) logarithm of the density of the saddle point
+                             (4) Error of the logarithm of the density at the saddle point 
+
+  * cluster.log: A simple log file about what is happening during execution.
+
+  * Dendrogram_graph_2.dat & Dendrogram_graph_2.gpl: Gnuplot script for obtaining the dendrogram associated with the topography.
+
+  * Topography.mat: Corresponds to the Topography matrix, in which the diagonal entries are the heights of the peaks and the off-
+diagonal entries are the heights of the saddle points separating these peaks. In this case, the peaks are sorted according with the
+Dendrogram.
+
+  * mat_labels.dat: Allows easy plotting of the Topography matrix by the "plot_examples.sh" script.
+
+Moreover, if we are computing the dimension, additional files are generated.  We strongly recomend to plot them before 
+setting the dimension, checking if the results comply with the quality standards defined in ref (Facco, Sci. Rep. 2017):
+
+  * xy_dim.dat & xy_dim.gpl: Gnuplot script to check the slope of the S-graph (view ref. Facco et al 2017).
+
+  * decimation_plot.dat & decimation_plot.gpl:  Gnuplot script to check the stability of the dimension estimation with respect to  decimation.
+
+In the tools folder we provide:
+
+Mat2input.sh, a bash script for transforming distance matrix files to acceptable distance input files. Its usage is:
+
+  ./Mat2input.sh matrix_file_name input_file_for_DPA
+
+
+Bibliography:
+
+  1) Rodriguez, A., & Laio, A. (2014). Clustering by fast search and find of 
+  density peaks. Science, 344(6191), 1492-1496.
+
+  2) Facco, E., d’Errico, M., Rodriguez, A., & Laio, A. (2017). Estimating the
+  intrinsic dimension of datasets by a minimal neighborhood information.
+  Scientific reports, 7(1), 12140.
+
+  3) Rodriguez, A. d'Errico, M., Facco, E. & Laio, A. (2018) Computing the free
+  energy without collective variables. JCTC (in press).
+
+  4) d'Errico, M., Facco, E., Laio, A. & Rodriguez, A. (2018) Automatic
+  topography of high-dimensional data sets by non-parametric Density Peak
+  clustering (Submitted).
