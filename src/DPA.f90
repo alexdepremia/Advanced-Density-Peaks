@@ -371,7 +371,7 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 364 of DPA.f90 ****"
       if (i.ne.j) then
         l=max(i,j)
         m=min(i,j)
-        k=(m-nele)*Nele-(m*m+m)/dos+l
+        k=(m-uno)*Nele-(m*m+m)/dos+l
         Dist(k)=d
         if (Dist(k).le.nearzero) then
           if (ignze) then
