@@ -71,7 +71,6 @@ integer (kind=idp),allocatable :: halo_m(:)   ! Cluster ID for the element with 
 real (kind=kdp),allocatable :: halo_cut(:)    ! density value cut for halo
 integer (kind=idp),allocatable :: Pop_halo(:)       ! Cluster Population without halo points
 real (kind=kdp) :: Zmerge                 ! Prefactor multiplying the errors for cluster merging
-logical :: same_height                ! Apply the same height to all the elements in the histogramm
 real (kind=kdp) :: Rho_sum            ! Factor to sum to the logarithm of the densities for in such a way that all are positives
  integer (kind=idp) :: Pop_cut        ! Ignore clusters with population under this threshold
 real (kind=kdp) :: Average_k          ! Average value of exit k
@@ -1597,7 +1596,6 @@ end subroutine
  do i=uno,dos*Nclus_m-uno
    if (dendro_active_points(i)) then
       dendro_n_active_points=dendro_n_active_points+uno
-      if (same_height) dendro_points(i,2)=xmax*real(1.1,kdp)
    endif
  enddo
  do while (dendro_n_active_points.gt.uno)
