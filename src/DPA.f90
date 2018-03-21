@@ -657,7 +657,7 @@ select case (den_type)
 !   endif
 !   write (6,*) "old style W: ", prefactor
 !   write (6,*) "new W :",
-    prefactor=dexp(dimset/2.*dlog(pi)-dlgama((dimset+2)/2.))
+    prefactor=dexp(dimset/2.*dlog(pi)-log_gamma((dimset+2)/2.))
     allocate (Nstar(Nele),stat=allocate_status)
 if (allocate_status /= 0) STOP "*** Not enough memory: line 658 of DPA.f90 ****"
     allocate (Nlist(Nele,limit),stat=allocate_status)
