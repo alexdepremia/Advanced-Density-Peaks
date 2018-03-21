@@ -827,7 +827,7 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 815 of DPA.f90 ****"
     limit=kknn
     write (51,*) "k-NN, k set to:",limit
 ! get prefactor for Volume calculation
-    prefactor=dexp(dimset/2.*dlog(pi)-dlgama((dimset+2)/2.))
+    prefactor=dexp(dimset/2.*dlog(pi)-log_gamma((dimset+2)/2.))
 
     allocate (Nstar(Nele),stat=allocate_status)
 if (allocate_status /= 0) STOP "*** Not enough memory: line 847 of DPA.f90 ****"
