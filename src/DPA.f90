@@ -163,7 +163,7 @@ integer (kind=idp) :: nvar
 real (kind=kdp)    :: d
 real (kind=kdp),allocatable    :: period (:)
 character (len=500) :: filename
-character (len=50000):: line
+character (len=5000000):: line
 real (kind=kdp),allocatable :: CRD(:,:) ! Coordinates
 logical*1 :: blanko
 !!
@@ -236,7 +236,7 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 199 of DPA.f90 ****"
     read (5,*) filename
     write (51,*) "coordinates file:",trim(filename)
     open (11,file=filename,status="old",err=112)
-    read (11,'(a50000)') line
+    read (11,'(a5000000)') line
     nvar=0
     l = len (trim(line))
     blanko=.true.
