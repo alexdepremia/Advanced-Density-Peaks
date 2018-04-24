@@ -181,7 +181,7 @@ write (51,*) "Distance type:",dis_type
 select case (dis_type)
   case (1) ! Read a symetric distance file written as e1,e2,d(e1,e2). Element indexes must start by 1.
     write (6,*) "distance file"
-    read (5,*) filename
+    read (5,'(a500)') filename
     write (51,*) "distance file:", trim(filename)
     open (11,file=filename,status="old",err=111)
     Nele=0
@@ -233,7 +233,7 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 199 of DPA.f90 ****"
     end select
   case (2)
     write (6,*) "coordinates file"
-    read (5,*) filename
+    read (5,'(a500)') filename
     write (51,*) "coordinates file:",trim(filename)
     open (11,file=filename,status="old",err=112)
     read (11,'(a5000000)') line
@@ -345,7 +345,7 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 299 of DPA.f90 ****"
     end select
   case (3) ! Read a neighbor distance file written as e1,e2,d(e1,e2)
     write (6,*) "neighbor distance file"
-    read (5,*) filename
+    read (5,'(a500)') filename
     write (51,*) "neighbor distance file:",trim(filename)
     open (11,file=filename,status="old",err=111)
     Nele=zero
