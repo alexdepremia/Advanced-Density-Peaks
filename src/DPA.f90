@@ -267,7 +267,7 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 262 of DPA.f90 ****"
     ND=(Nele*Nele-Nele)/dos
     allocate (Dist(ND),stat=allocate_status)
 if (allocate_status /= 0) STOP "*** Not enough memory: line 269 of DPA.f90 ****"
-    write (6,*) "Do you want to use PBC?"
+    write (6,*) "Do you want to use PBC (Periodic Boundary Conditions, for example if your features are angles)?"
     write (6,*) "(1) No"
     write (6,*) "(2) Yes"
     read (5,*) pbc_type
