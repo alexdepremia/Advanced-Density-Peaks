@@ -162,6 +162,9 @@ select case (id_err)
   case (17) 
     write (6,*) "No entries in the input coordinates/distances"
     call exit (id_err)
+  case (18) 
+    write (6,*) "Out of memory when allocating"
+    call exit (id_err)
   case default
   stop "unrecognized error"
 end select
@@ -217,7 +220,10 @@ select case (dis_type)
     endif
     ND=(Nele*Nele-Nele)/dos
     allocate (Dist(ND),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 199 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     do n=1,Nlines
       read (11,*) i,j,d
       if (i.ne.j) then
@@ -284,14 +290,20 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 199 of DPA.f90 ****"
     rewind (11)
     write (51,*) "Number of columns:",nvar
     allocate (CRD(Nele,nvar),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 262 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     do i=uno,Nele
       read (11,*,err=114) (CRD(i,j),j=uno,nvar)
     enddo
     close (11)
     ND=(Nele*Nele-Nele)/dos
     allocate (Dist(ND),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 269 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     write (6,*) "Do you want to use PBC (Periodic Boundary Conditions, for example if your features are angles)?"
     write (6,*) "(1) No"
     write (6,*) "(2) Yes"
@@ -321,7 +333,10 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 269 of DPA.f90 ****"
       enddo
     case (2)
       allocate (period(nvar),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 299 of DPA.f90 ****"
+      if (allocate_status /= 0) then
+        id_err=18
+        return
+      endif  
       write (6,*) "Specify the period for each variable"
       read (5,*) period(:)
       write (6,*) "------------------------------------"
@@ -390,7 +405,10 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 299 of DPA.f90 ****"
     endif
     ND=(Nele*Nele-Nele)/dos
     allocate (Dist(ND),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 364 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     do j=1,ND
       Dist(j)=(0.9d0+0.1d0*dfloat(j)/dfloat(ND))*maxr
     enddo
@@ -471,7 +489,10 @@ fdim=real(1.,kdp)-fdim
 !
 !! Compute nu=r2/r1
 allocate (nu(Nele),i_nu(Nele),decset(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 445 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 d_mle=0.
 do i=1,Nele
   a=gDist(i,uno)
@@ -503,7 +524,10 @@ write (6,*) "(1) Yes"
 read (5,*) block
 if (block.eq.1) then
   allocate (boxes(nfrac),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 477 of DPA.f90 ****"
+  if (allocate_status /= 0) then
+    id_err=18
+    return
+  endif  
   boxes(1)=2
   boxes(2)=3
   boxes(3)=4
@@ -525,7 +549,10 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 477 of DPA.f90 ****"
   open (999,file="decimation_plot.dat")
   write (999,*) Nele,d_mle,d_mle/sqrt(dfloat(Nele))
   allocate (set(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 499 of DPA.f90 ****"
+  if (allocate_status /= 0) then
+    id_err=18
+    return
+  endif  
   do jj=1,nfrac
     Ndec=Nint(Nele/float(boxes(jj)))
     cdmle=rzero
@@ -655,9 +682,19 @@ read (5,*) den_type
 write (51,*) "Density type:", den_type
 
 allocate (Rho(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 628 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 allocate (Rho_err(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 630 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 
 select case (den_type)
   case (1)
@@ -688,15 +725,30 @@ select case (den_type)
 !   write (6,*) "new W :",
     prefactor=dexp(dimset/2.*dlog(pi)-log_gamma((dimset+2)/2.))
     allocate (Nstar(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 658 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     allocate (Nlist(Nele,limit),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 660 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     allocate (VV(Nele,limit),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 662 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     allocate (Vols(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 664 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     allocate (iVols(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 666 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     do i=uno,Nele
       Vols(:)=maxr
       do j=uno,Nele
@@ -737,7 +789,10 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 666 of DPA.f90 ****"
 
     do i=uno,Nele
       allocate (vi(Nstar(i)),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 707 of DPA.f90 ****"
+      if (allocate_status /= 0) then
+        id_err=18
+        return
+      endif  
       Vi(uno)=VV(i,uno)
       kNN=.false.
       do j=dos,Nstar(i)
@@ -845,7 +900,10 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 707 of DPA.f90 ****"
     
 !Get dc
     allocate (dc(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 815 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     do i=1,Nele
       j=Nlist(i,Nstar(i))
       dc(i)=gDist(i,j)
@@ -859,13 +917,25 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 815 of DPA.f90 ****"
     prefactor=dexp(dimset/2.*dlog(pi)-log_gamma((dimset+2)/2.))
 
     allocate (Nstar(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 847 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     allocate (Nlist(Nele,limit),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 849 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     allocate (Vols(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 851 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     allocate (iVols(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 853 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     Rho_sum=maxr
     prefactor=log(float(kknn))-log(prefactor)
     do i=1,Nele
@@ -888,7 +958,10 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 853 of DPA.f90 ****"
     deallocate (Vols,iVols)
     Rho(:)=Rho(:)-Rho_sum+real(1.,kdp) !!! In this way the minimum Rho is equal to 1. (for hierarchies it does not matter so much)
     allocate (dc(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 876 of DPA.f90 ****"
+    if (allocate_status /= 0) then
+      id_err=18
+      return
+    endif  
     do i=1,Nele
       j=Nlist(i,Nstar(i))
       dc(i)=gDist(i,j)
@@ -934,18 +1007,30 @@ integer (kind=idp),allocatable:: putative (:)
 !!
 id_err=0
 allocate (putative(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 922 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 allocate (Cluster(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 924 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 allocate (candidates_B(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 926 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 ! centers are points with maximum density in their neighborhood and do not
 ! belong to the neighborhood of any other point with higher density
 putative(:)=0
 Cluster(:)=0
 Nclus=0
 allocate (Rho_prob(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 933 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 Rho_prob(:)=0.
 do i=1,Nele
   Rho_prob(i)=Rho(i)-Rho_err(i)
@@ -953,14 +1038,23 @@ enddo
 ! copy of rho (not efficient, but it adds clarity to the code)
 
 allocate (Rho_copy(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 941 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 allocate (iRho(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 943 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 Rho_copy(:)=-Rho_prob(:)
 call HPSORT(Nele,Rho_copy,iRho) ! iRho contains the order in density (iRho(1) is the element with highest Rho...)
 deallocate (Rho_copy)
 allocate (ordRho(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 948 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 do i=1,Nele
   ordRho(iRho(i))=i                 ! ordRho is the complementary of iRho. Given an element, ordRho returns its order in density
 enddo
@@ -996,9 +1090,15 @@ do i=uno,Nele
 enddo
 write (51,*) "Number of clusters before automatic merging:",Nclus
 allocate (Centers(Nclus),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 984 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 allocate (centquest(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 986 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 deallocate (putative)
 centquest=.false.
 do i=uno,Nele
@@ -1041,7 +1141,10 @@ enddo
 ! count cluster population
 
 allocate (Pop(Nclus),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1029 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 Pop(:)=zero
 do i=uno,Nele
   Pop(Cluster(i))=Pop(Cluster(i))+uno
@@ -1050,7 +1153,10 @@ enddo
 ! find border densities
 
 allocate (Bord(Nclus,Nclus),Bord_err(Nclus,Nclus),eb(Nclus,Nclus),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1038 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 Bord(:,:)=real(-1.,kdp)
 Bord_err(:,:)=rzero
 eb(:,:)=zero
@@ -1115,9 +1221,15 @@ deallocate (iRho)
 deallocate (ordRho)
 ! Info per graph pre automatic merging
 allocate (cent(Nclus),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1103 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 allocate (cent_err(Nclus),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1105 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 do i=uno,Nclus
   cent(i)=Rho(Centers(i))
   cent_err(i)=Rho_err(Centers(i))
@@ -1168,13 +1280,25 @@ real (kind=kdp) :: f1,f2,f12,b1,b2,sens_kin
 id_err=zero
 Nbarr=(Nclus*Nclus-Nclus)/dos
 allocate (Barrier(Nbarr),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1156 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 allocate (Barrier_err(Nbarr),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1158 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 allocate (iBarrier(Nbarr),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1160 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 allocate (Bcorr(Nbarr,2),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1162 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 n=zero
 do i=uno,Nclus-uno
   do j=i+uno,Nclus
@@ -1202,7 +1326,10 @@ sens_kin=rzero
 Survive(:)=.true.
 change=.true.
 allocate (Cluster_m(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1190 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 Cluster_m(:)=Cluster(:)
 niter=0
 do while (change)
@@ -1278,7 +1405,10 @@ do i=uno,Nclus
 enddo
 write (51,*) "TOTAL CLUSTERS AFTER MERGING:",Nclus_m
 allocate (M2O(Nclus_m),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1266 of DPA.f90 ****"
+if (allocate_status /= 0) then
+  id_err=18
+  return
+endif  
 n=0
 O2M(:)=int(-1,idp)
 do i=uno,Nclus
@@ -1293,13 +1423,25 @@ enddo
 
 if (Nclus_m.gt.uno) then
   allocate (Pop_m(Nclus_m),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1281 of DPA.f90 ****"
+  if (allocate_status /= 0) then
+    id_err=18
+    return
+  endif  
   allocate (Bord_m(Nclus_m,Nclus_m),Bord_err_m(Nclus_m,Nclus_m),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1283 of DPA.f90 ****"
+  if (allocate_status /= 0) then
+    id_err=18
+    return
+  endif  
   allocate (cent_m(Nclus_m),cent_err_m(Nclus_m),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1285 of DPA.f90 ****"
+  if (allocate_status /= 0) then
+    id_err=18
+    return
+  endif  
   allocate (Centers_m(Nclus_m),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1287 of DPA.f90 ****"
+  if (allocate_status /= 0) then
+    id_err=18
+    return
+  endif  
   write (6,*) "Population threshold to ignore clusters in the dendrogram"
   read (5,*) Pop_cut
   write (51,*) "Clusters automatically ignored in the dendrogram if their population is under:",Pop_cut
@@ -1322,11 +1464,20 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 1287 of DPA.f90 ****
   enddo
 ! Compute halo
   allocate (halo_cut(Nclus_m),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1310 of DPA.f90 ****"
+  if (allocate_status /= 0) then
+    id_err=18
+    return
+  endif  
   allocate (halo_m(Nele),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1312 of DPA.f90 ****"
+  if (allocate_status /= 0) then
+    id_err=18
+    return
+  endif  
   allocate (Pop_halo(Nclus_m),stat=allocate_status)
-if (allocate_status /= 0) STOP "*** Not enough memory: line 1314 of DPA.f90 ****"
+  if (allocate_status /= 0) then
+    id_err=18
+    return
+  endif  
   halo_cut(:)=maxval(Bord_m(:,:),dim=2)
   Pop_halo(:)=Pop_m(:)
   do i=uno,Nele
