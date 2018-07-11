@@ -119,28 +119,28 @@ integer (kind=idp) :: id_err
 select case (id_err)
   case (1)
     write (6,*) "Select case error for distance type"
-    call exit (id_err)
+    call exit (1)
   case (2)
     write (6,*)"Error opening distance file"
-    call exit (id_err)
+    call exit (2)
   case (3)
     write (6,*)"Error opening coordinates file"
-    call exit (id_err)
+    call exit (3)
   case (4)
     write (6,*)"Error on distance file format"
-    call exit (id_err)
+    call exit (4)
   case (5)
     write (6,*)"Error on coordinates file format"
-    call exit (id_err)
+    call exit (5)
   case (6)
     write (6,*)"Peridic Bounday Conditions option unrecognized"
-    call exit (id_err)
+    call exit (6)
   case (7)
     write (6,*)"Dimension calculation option unrecognized"
-    call exit (id_err)
+    call exit (7)
   case (8) 
     write (6,*)"Density calculation option unrecognized"
-    call exit (id_err)
+    call exit (8)
   case (9) 
     write (6,*)"Just one cluster"
     stop
@@ -149,22 +149,22 @@ select case (id_err)
     stop
   case (11) 
     write (6,*)"Error in assignation"
-    call exit (id_err)
+    call exit (11)
   case (12) 
     write (6,*)"Error with different points with zero distance"
-    call exit (id_err)
+    call exit (12)
   case (15) 
     write (6,*)"STOP: please, check for problems in the distances"
-    call exit (id_err)
+    call exit (15)
   case (16) 
     write (6,*)"proposed limit greater than the maximum hard limit"
-    call exit (id_err)
+    call exit (16)
   case (17) 
     write (6,*) "No entries in the input coordinates/distances"
-    call exit (id_err)
+    call exit (17)
   case (18) 
     write (6,*) "Out of memory when allocating"
-    call exit (id_err)
+    call exit (18)
   case default
   stop "unrecognized error"
 end select
