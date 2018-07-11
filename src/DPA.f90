@@ -263,7 +263,7 @@ select case (dis_type)
     read (5,'(a500)') filename
     write (51,*) "coordinates file:",trim(filename)
     open (11,file=filename,status="old",err=112)
-    read (11,'(a5000000)') line
+    read (11,'(a5000000)',end=1120) line
     nvar=0
     l = len (trim(line))
     blanko=.true.
@@ -279,7 +279,7 @@ select case (dis_type)
     rewind (11)
     Nele=0
     do
-      read (11,'(a5000)',end=1120) line
+      read (11,'(a5000)',end=1120,err=1120) line
       Nele=Nele+uno
     enddo
 1120 continue
