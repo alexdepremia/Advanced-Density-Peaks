@@ -118,33 +118,50 @@ implicit none
 integer (kind=idp) :: id_err
 select case (id_err)
   case (1)
-    stop "Select case error for distance type"
+    write (6,*) "Select case error for distance type"
+    call exit (id_err)
   case (2)
-    stop "Error opening distance file"
+    write (6,*)"Error opening distance file"
+    call exit (id_err)
   case (3)
-    stop "Error opening coordinates file"
+    write (6,*)"Error opening coordinates file"
+    call exit (id_err)
   case (4)
-    stop "Error on distance file format"
+    write (6,*)"Error on distance file format"
+    call exit (id_err)
   case (5)
-    stop "Error on coordinates file format"
+    write (6,*)"Error on coordinates file format"
+    call exit (id_err)
   case (6)
-    stop "Peridic Bounday Conditions option unrecognized"
+    write (6,*)"Peridic Bounday Conditions option unrecognized"
+    call exit (id_err)
   case (7)
-    stop "Dimension calculation option unrecognized"
+    write (6,*)"Dimension calculation option unrecognized"
+    call exit (id_err)
   case (8) 
-    stop "Density calculation option unrecognized"
+    write (6,*)"Density calculation option unrecognized"
+    call exit (id_err)
   case (9) 
-    stop "Just one cluster"
+    write (6,*)"Just one cluster"
+    stop
   case (10) 
-    stop "Just one cluster after merging"
+    write (6,*)"Just one cluster after merging"
+    stop
   case (11) 
-    stop "Error in assignation"
+    write (6,*)"Error in assignation"
+    call exit (id_err)
   case (12) 
-    stop "Error with different points with zero distance"
+    write (6,*)"Error with different points with zero distance"
+    call exit (id_err)
   case (15) 
-    stop "STOP: please, check for problems in the distances"
+    write (6,*)"STOP: please, check for problems in the distances"
+    call exit (id_err)
   case (16) 
-    stop "proposed limit greater than the maximum hard limit"
+    write (6,*)"proposed limit greater than the maximum hard limit"
+    call exit (id_err)
+  case (17) 
+    write (6,*) "No entries in the input coordinates/distances"
+    call exit (id_err)
   case default
   stop "unrecognized error"
 end select
@@ -194,6 +211,10 @@ select case (dis_type)
     enddo
 1110 continue
     rewind (11)
+    if (Nele.le.zero) then
+      id_err=17
+      return
+    endif
     ND=(Nele*Nele-Nele)/dos
     allocate (Dist(ND),stat=allocate_status)
 if (allocate_status /= 0) STOP "*** Not enough memory: line 199 of DPA.f90 ****"
@@ -256,6 +277,10 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 199 of DPA.f90 ****"
       Nele=Nele+uno
     enddo
 1120 continue
+    if (Nele.le.zero) then
+      id_err=17
+      return
+    endif
     rewind (11)
     write (51,*) "Number of columns:",nvar
     allocate (CRD(Nele,nvar),stat=allocate_status)
@@ -359,6 +384,10 @@ if (allocate_status /= 0) STOP "*** Not enough memory: line 299 of DPA.f90 ****"
 3110 continue
     rewind (11)
     write (6,*) "Number of elements is:",Nele
+    if (Nele.le.zero) then
+      id_err=17
+      return
+    endif
     ND=(Nele*Nele-Nele)/dos
     allocate (Dist(ND),stat=allocate_status)
 if (allocate_status /= 0) STOP "*** Not enough memory: line 364 of DPA.f90 ****"
