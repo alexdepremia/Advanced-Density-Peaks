@@ -1451,6 +1451,8 @@ if (Nclus_m.gt.uno) then
     Cluster_m(i)=O2M(Cluster_m(i))
     Pop_m(Cluster_m(i))=Pop_m(Cluster_m(i))+uno
   enddo
+  Bord_m(:,:)=0.
+  Bord_err_m(:,:)=0.
   do i=uno,Nclus_m
     do j=i+uno,Nclus_m
       Bord_m(i,j)=Bord(M2O(i),M2O(j)) 
