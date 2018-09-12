@@ -1,0 +1,141 @@
+ Distance type:                    2
+ coordinates file:FigS1.dat
+ Number of columns:                    2
+ DIMENSION EMPLOYED:   2.0000000000000000     
+ Number of elements:                20000
+ Density type:                    1
+ p-value for computing the density set to 1E-6, threshold set to 23.92812698
+ Number of points arrived to kmax:                  159
+ Added term to log(Rho)=  0.36685996192173720     
+ Average exit k=   222.60974999999999     
+ Number of clusters before automatic merging:                   35
+ Performing assignation
+ INTERVAL:                    1
+ Merging Z set to:   0.0000000000000000     
+ TOTAL CLUSTERS AFTER MERGING:                   35
+ INTERVAL:                    2
+ Merging Z set to:  0.10000000000000001     
+ TOTAL CLUSTERS AFTER MERGING:                   35
+ INTERVAL:                    3
+ Merging Z set to:  0.20000000000000001     
+ TOTAL CLUSTERS AFTER MERGING:                   35
+ INTERVAL:                    4
+ Merging Z set to:  0.30000000000000004     
+ TOTAL CLUSTERS AFTER MERGING:                   35
+ INTERVAL:                    5
+ Merging Z set to:  0.40000000000000002     
+ TOTAL CLUSTERS AFTER MERGING:                   34
+ INTERVAL:                    6
+ Merging Z set to:  0.50000000000000000     
+ TOTAL CLUSTERS AFTER MERGING:                   32
+ INTERVAL:                    7
+ Merging Z set to:  0.60000000000000009     
+ TOTAL CLUSTERS AFTER MERGING:                   30
+ INTERVAL:                    8
+ Merging Z set to:  0.70000000000000007     
+ TOTAL CLUSTERS AFTER MERGING:                   26
+ INTERVAL:                    9
+ Merging Z set to:  0.80000000000000004     
+ TOTAL CLUSTERS AFTER MERGING:                   25
+ INTERVAL:                   10
+ Merging Z set to:  0.90000000000000002     
+ TOTAL CLUSTERS AFTER MERGING:                   20
+ INTERVAL:                   11
+ Merging Z set to:   1.0000000000000000     
+ TOTAL CLUSTERS AFTER MERGING:                   19
+ INTERVAL:                   12
+ Merging Z set to:   1.1000000000000001     
+ TOTAL CLUSTERS AFTER MERGING:                   15
+ INTERVAL:                   13
+ Merging Z set to:   1.2000000000000002     
+ TOTAL CLUSTERS AFTER MERGING:                   12
+ INTERVAL:                   14
+ Merging Z set to:   1.3000000000000000     
+ TOTAL CLUSTERS AFTER MERGING:                   10
+ INTERVAL:                   15
+ Merging Z set to:   1.4000000000000001     
+ TOTAL CLUSTERS AFTER MERGING:                   10
+ INTERVAL:                   16
+ Merging Z set to:   1.5000000000000000     
+ TOTAL CLUSTERS AFTER MERGING:                   10
+ INTERVAL:                   17
+ Merging Z set to:   1.6000000000000001     
+ TOTAL CLUSTERS AFTER MERGING:                    8
+ INTERVAL:                   18
+ Merging Z set to:   1.7000000000000002     
+ TOTAL CLUSTERS AFTER MERGING:                    8
+ INTERVAL:                   19
+ Merging Z set to:   1.8000000000000000     
+ TOTAL CLUSTERS AFTER MERGING:                    8
+ INTERVAL:                   20
+ Merging Z set to:   1.9000000000000001     
+ TOTAL CLUSTERS AFTER MERGING:                    8
+ INTERVAL:                   21
+ Merging Z set to:   2.0000000000000000     
+ TOTAL CLUSTERS AFTER MERGING:                    7
+ INTERVAL:                   22
+ Merging Z set to:   2.1000000000000001     
+ TOTAL CLUSTERS AFTER MERGING:                    7
+ INTERVAL:                   23
+ Merging Z set to:   2.2000000000000002     
+ TOTAL CLUSTERS AFTER MERGING:                    7
+ INTERVAL:                   24
+ Merging Z set to:   2.3000000000000003     
+ TOTAL CLUSTERS AFTER MERGING:                    7
+ INTERVAL:                   25
+ Merging Z set to:   2.4000000000000004     
+ TOTAL CLUSTERS AFTER MERGING:                    7
+ INTERVAL:                   26
+ Merging Z set to:   2.5000000000000000     
+ TOTAL CLUSTERS AFTER MERGING:                    7
+ INTERVAL:                   27
+ Merging Z set to:   2.6000000000000001     
+ TOTAL CLUSTERS AFTER MERGING:                    6
+ INTERVAL:                   28
+ Merging Z set to:   2.7000000000000002     
+ TOTAL CLUSTERS AFTER MERGING:                    6
+ INTERVAL:                   29
+ Merging Z set to:   2.8000000000000003     
+ TOTAL CLUSTERS AFTER MERGING:                    6
+ INTERVAL:                   30
+ Merging Z set to:   2.9000000000000004     
+ TOTAL CLUSTERS AFTER MERGING:                    5
+ INTERVAL:                   31
+ Merging Z set to:   3.0000000000000000     
+ TOTAL CLUSTERS AFTER MERGING:                    5
+ INTERVAL:                   32
+ Merging Z set to:   3.1000000000000001     
+ TOTAL CLUSTERS AFTER MERGING:                    4
+ INTERVAL:                   33
+ Merging Z set to:   3.2000000000000002     
+ TOTAL CLUSTERS AFTER MERGING:                    4
+ INTERVAL:                   34
+ Merging Z set to:   3.3000000000000003     
+ TOTAL CLUSTERS AFTER MERGING:                    4
+ INTERVAL:                   35
+ Merging Z set to:   3.4000000000000004     
+ TOTAL CLUSTERS AFTER MERGING:                    4
+ INTERVAL:                   36
+ Merging Z set to:   3.5000000000000000     
+ TOTAL CLUSTERS AFTER MERGING:                    3
+ INTERVAL:                   37
+ Merging Z set to:   3.6000000000000001     
+ TOTAL CLUSTERS AFTER MERGING:                    3
+ INTERVAL:                   38
+ Merging Z set to:   3.7000000000000002     
+ TOTAL CLUSTERS AFTER MERGING:                    3
+ INTERVAL:                   39
+ Merging Z set to:   3.8000000000000003     
+ TOTAL CLUSTERS AFTER MERGING:                    3
+ INTERVAL:                   40
+ Merging Z set to:   3.9000000000000004     
+ TOTAL CLUSTERS AFTER MERGING:                    3
+ INTERVAL:                   41
+ Merging Z set to:   4.0000000000000000     
+ TOTAL CLUSTERS AFTER MERGING:                    3
+ INTERVAL:                   42
+ Merging Z set to:   4.1000000000000005     
+ TOTAL CLUSTERS AFTER MERGING:                    2
+ INTERVAL:                   43
+ Merging Z set to:   4.2000000000000002     
+ TOTAL CLUSTERS AFTER MERGING:                    1

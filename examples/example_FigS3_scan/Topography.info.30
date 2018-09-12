@@ -1,0 +1,7 @@
+ # CENTERS
+ # Cluster_index -F_center Error_{F_center} index_center Cluster_population Cluster_population_no_halo
+      1   5.5829329117E+00   1.5593410016E-01    4274    6208    3461
+      2   6.2540850886E+00   9.6280586021E-02    8678   13792   11250
+ # SADDLES:
+ # C1 C2 -F_bord_C1_C2 Err_F_bord_1_2
+      1       2   3.8939638649E+00   2.2571966482E-01
