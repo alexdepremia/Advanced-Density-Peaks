@@ -767,6 +767,7 @@ select case (den_type)
     Rho_sum=maxr
     numlimit=zero
     Average_k=rzero
+    open (99,file="Densities_summary.dat")
     do i=uno,Nele
       viol=.false.
       k=minknn
@@ -882,6 +883,7 @@ select case (den_type)
       endif
       Rho_err(i)=dsqrt(dfloat(int(4,idp)*Nstar(i)+dos)/dfloat(Nstar(i)*(Nstar(i)-uno)))
       if (Rho(i).lt.Rho_sum) Rho_sum=Rho(i)
+      write (99,*) Rho(i),Rho_err(i)
       deallocate (vi)
     enddo
     write (6,*) "Number of points arrived to kmax:",numlimit
