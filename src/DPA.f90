@@ -268,7 +268,7 @@ select case (dis_type)
     l = len (trim(line))
     blanko=.true.
     do i=1,l
-      if ( line(i:i) == ' ' ) then
+      if (( line(i:i) == ' ' ).or.(line(i:i)==char(9)).or.( line(i:i) == ',').or.( line(i:i) == ';')) then
         blanko = .true.
       else if ( blanko ) then
         nvar = nvar + uno

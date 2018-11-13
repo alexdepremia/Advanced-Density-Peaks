@@ -17,12 +17,12 @@ In the "examples" folders there are some toy cases. In standard linux machines t
 "make_examples.sh" script and plotted (if you have installed gnuplot) with the "plot_examples.sh" script.
 
 The program reads as input files of three kinds:
-                               (1) A symetric distance file written as e1,e2,d(e1,e2). Element indexes must start from 1.
+                               (1) A symetric distance file written as e1,e2,d(e1,e2). Element indexes must start from 1. Field separators accepted are space or tab.
                                (2) A coordinates file, in which each row corresponds to a data point, each column to a coordinate.
                                    In this case the distance matrix is computed with the Euclidean metric (optionally periodic 
-                                   boundary conditions can be considered).
+                                   boundary conditions can be considered). Field separators accepted are space, comma, semicolon or tab.
                                (3) A distance file written as e1,e2,d(e1,e2) with the nearest neighbors for each data point.
-                                   Distances that are not specified are considered very large.
+                                   Distances that are not specified are considered very large. Field separators accepted are space or tab.
 
 The ouput files are:
 
