@@ -13,6 +13,7 @@ The code performs the following operations:
 In its present implementation, the code uses one of the ORDERPACK modules written by Michel Olagnon (http://www.physics.rutgers.edu/~diablo/)
 
 Compiling can be done by executing the "./compile.sh" script. The executable appears in ./bin folder as "DPA.x".
+
 In the "examples" folders there are some toy cases. In standard linux machines they can be run with the
 "make_examples.sh" script and plotted (if you have installed gnuplot) with the "plot_examples.sh" script.
 
@@ -58,6 +59,8 @@ diagonal entries are the heights of the saddle points separating these peaks. In
 Dendrogram.
 
   * mat_labels.dat: Allows easy plotting of the Topography matrix by the "plot_examples.sh" script.
+  
+  * Restart_summary.rst: Allows recomputing the cluster partition and the dendrogram (for instance with a different Z value) without recomputing/reading the distances nor recomputing the densities. For using it you need to add rst as first argument to DPA.x
 
 Moreover, if we are computing the dimension, additional files are generated.  We strongly recomend to plot them before 
 setting the dimension, checking if the results comply with the quality standards defined in ref (Facco, Sci. Rep. 2017):
