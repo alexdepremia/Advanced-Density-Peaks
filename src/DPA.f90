@@ -31,7 +31,7 @@ real (kind=kdp), Parameter :: minr = -huge(dimset) ! Minimum real value not -inf
 real (kind=kdp), Parameter :: maxr = huge(dimset)  ! Maximum real value not inf
 real (kind=kdp), Parameter :: nearzero = tiny(dimset)  ! Minimum positive value
 !integer (kind=idp) :: dimint                 ! Not used anymore
-integer (kind=idp),parameter :: maxknn=int(1001,idp)  ! maximum number of neighbours to explore+1
+integer (kind=idp),parameter :: maxknn=int(2001,idp)  ! maximum number of neighbours to explore+1
 integer (kind=idp),parameter :: minknn=int(4,idp)    ! minimum number of neighbours to explore+1
 integer (kind=idp),parameter :: zero=int(0,idp) ! some casting
 integer (kind=idp),parameter :: uno=int(1,idp)  ! some casting
@@ -1078,7 +1078,7 @@ subroutine clustering(id_err)
 implicit none
 integer (kind=idp) :: id_err
 !! Local variables
-integer (kind=idp) :: i,j,k
+integer (kind=idp) :: i,j,k,kk
 integer (kind=idp) :: ig,jg
 integer (kind=idp) :: nassign
 integer (kind=idp) :: iref
@@ -1251,46 +1251,43 @@ candidates_B(:)=zero
 
 do i=uno,Nele
   if (.not.centquest(i)) then
-    dmin=maxr
-    do j=uno,Nele
-      if (cluster(j).ne.cluster(i)) then
-        d=gDist(i,j)
-        if (d.lt.dmin) then
-          dmin=d
-          jg=j
+    do k=1,Nclus
+      if (k.ne.cluster(i)) then
+        dmin=maxr
+        do j=1,Nstar(i)
+           if ((cluster(Nlist(i,j)).eq.k).and.(gDist(i,Nlist(i,j)).lt.dmin)) then
+             dmin=gDist(i,Nlist(i,j))
+             jg=Nlist(i,j)
+           endif
+        enddo
+        if (dmin.le.dc(i)) then
+          iref=i
+          kk=zero
+          extend=.true.
+          do while ( (kk.lt.Nele).and.extend)
+            kk=kk+uno
+            if (cluster(kk).eq.cluster(i)) then
+              if (gDist(kk,jg).lt.dmin) extend=.false.
+            endif
+          enddo
+          if (extend) then
+            candidates_B(i)=cluster(jg)
+            if (Rho_prob(iref).gt. Bord(cluster(i),cluster(jg))) then
+              Bord(cluster(i),cluster(jg))=Rho_prob(iref)
+              Bord(cluster(jg),cluster(i))=Rho_prob(iref)
+              Bord_err(cluster(i),cluster(jg))=Rho_err(iref)
+              Bord_err(cluster(jg),cluster(i))=Rho_err(iref)
+              eb(cluster(i),cluster(jg))=iref
+              eb(cluster(jg),cluster(i))=iref
+            endif
+          endif
         endif
       endif
     enddo
-    if (dmin.le.dc(i)) then
-      iref=i
-      k=zero
-      extend=.true.
-!    do while ( (k.lt.Nstar(i)).and.extend)
-!      k=k+1
-!      if (cluster(Nlist(i,k)).eq.cluster(i)) then
-!        if (gDist(Nlist(i,k),jg).lt.dmin) extend=.false.
-!      endif
-!    enddo
-      do while ( (k.lt.Nele).and.extend)
-        k=k+uno
-        if (cluster(k).eq.cluster(i)) then
-          if (gDist(k,jg).lt.dmin) extend=.false.
-        endif
-      enddo
-      if (extend) then
-        candidates_B(i)=cluster(jg)
-        if (Rho_prob(iref).gt. Bord(cluster(i),cluster(jg))) then
-          Bord(cluster(i),cluster(jg))=Rho_prob(iref)
-          Bord(cluster(jg),cluster(i))=Rho_prob(iref)
-          Bord_err(cluster(i),cluster(jg))=Rho_err(iref)
-          Bord_err(cluster(jg),cluster(i))=Rho_err(iref)
-          eb(cluster(i),cluster(jg))=iref
-          eb(cluster(jg),cluster(i))=iref
-        endif
-      endif
-    endif
   endif
 enddo
+
+
 do i=uno,Nclus-uno
   do j=i+uno,Nclus
     if (eb(i,j).ne.zero) then
