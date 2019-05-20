@@ -1658,27 +1658,15 @@ end subroutine
  real (kind=kdp),dimension(Nclus_m,Nclus_m):: border_copy
  real (kind=kdp) :: xmax
  real (kind=kdp) :: b,ebo
- real (kind=kdp),dimension(dos*Nclus_m-uno,2):: dendro_points
- logical,dimension(dos*Nclus_m-uno):: dendro_active_points
- logical,dimension(dos*Nclus_m-uno):: dendro_barrier
- real (kind=kdp),dimension(dos*Nclus_m-uno):: dendro_error
- real (kind=kdp),dimension(dos*Nclus_m-uno):: dendro_density
- real (kind=kdp),dimension(dos*Nclus_m-uno):: dendro_width
- character*3,dimension(dos*Nclus_m-uno):: dendro_label
- integer (kind=idp) :: dendro_active_barrier
- integer (kind=idp) :: dendro_n_active_points
- integer (kind=idp) :: dendro_left_nearest
- integer (kind=idp) :: dendro_right_nearest
  integer (kind=idp) :: Narrow
  integer (kind=idp) :: k
  real (kind=kdp) :: width
 !
- real (kind=kdp) :: dminleft
- real (kind=kdp) :: dminright
-
  real (kind=kdp) :: last_barrier       ! Last node in the dendrogram
- real (kind=kdp) :: maxdens            ! Maximum density value in the dataset
- real (kind=kdp) :: hdendro
+ integer ::  tojoin(2)
+ real (kind=kdp) :: Fmax,shiftX,linew
+ real (kind=kdp) :: dendcoord(Nclus_m,2)
+ real (kind=kdp) :: Dend_dist(Nclus_m,Nclus_m)
 
 
  id_err=zero
@@ -1808,143 +1796,49 @@ end subroutine
      endif
    endif
  enddo
-! Write graph and recover information for dendrogram
-! dendro_points: coordinates of peaks and barriers 
-! dendro_active_points: are this point still alive ?
-! dendro_barrier :: is this point a barrier ?
-! dendro_active_barrier :: index of the active barrier
- dendro_active_points(:)=.false.
- dendro_barrier(:)=.false.
- dendro_label(:)="   "
- dendro_width(:)=rzero
- l=Pop_m(peak_list(1,1))/dos
- k=uno
- write (dendro_label(k),'(i3)') peak_list(1,1)
- dendro_points(k,1)=dfloat(l)
- dendro_points(k,2)=cent_m(peak_list(1,1))
- dendro_density(k)=cent_m(peak_list(1,1))
- dendro_error(k)=cent_err_m(peak_list(1,1))
- dendro_active_points(k)=.true.
- dendro_barrier(k)=.false.
- do i=dos,N_peak_list(1)
-   j=i-uno
-   b=Bord_m(border_list(1,j,1),border_list(1,j,2))
-   ebo=Bord_err_m(border_list(1,j,1),border_list(1,j,2))
-   l=l+Pop_m(peak_list(1,j))/dos
-   k=k+uno
-   dendro_points(k,1)=dfloat(l)
-   dendro_points(k,2)=b
-   dendro_density(k)=b
-   dendro_error(k)=ebo
-   dendro_active_points(k)=.false.
-   dendro_barrier(k)=.true.
-   l=l+Pop_m(peak_list(1,i))/dos
-   k=k+uno
-   write (dendro_label(k),'(i3)') peak_list(1,i)
-   dendro_points(k,1)=dfloat(l)
-   dendro_points(k,2)=cent_m(peak_list(1,i))
-   dendro_density(k)=cent_m(peak_list(1,i))
-   dendro_error(k)=cent_err_m(peak_list(1,i))
-   dendro_active_points(k)=.true.
-   dendro_barrier(k)=.false.
+!
+ open (23,file="Dendrogram_graph_2.gpl")
+ open (24,file="Dendrogram_labels_2.dat")
+ linew=2.0
+ id_err=zero
+ Fmax=maxval(cent_m(:))
+ Dend_dist(:,:)=Fmax-Bord_m(:,:)
+ shiftX=0.
+ narrow=0
+ do i=1,Nclus_m
+   j=peak_list(1,i)
+   dendcoord(j,1)=shiftX+0.5*Pop_m(j)
+   dendcoord(j,2)=cent_m(j)
+   shiftX=shiftX+Pop_m(j)
+   write (24,*) dendcoord(j,1),dendcoord(j,2),j
  enddo
- l=l+Pop_m(peak_list(1,N_peak_list(1)))/dos
-
- open (21,file="Dendrogram_graph_2.gpl")
- open (22,file="Dendrogram_labels_2.dat")
- dendro_n_active_points=zero
- Narrow=zero
- 3333 FORMAT ("set arrow ",i4," from ",e14.7,",",e14.7," to ",e14.7,",",e14.7," nohead lw ",f14.7)
-  xmax=real(-1.,kdp)
- do i=uno,dos*Nclus_m-uno
-   if (dendro_barrier(i).and. (dendro_points(i,2).gt.xmax)) then
-      dendro_active_barrier=i
-      xmax=dendro_points(i,2)
-   endif
- enddo
- do i=uno,dos*Nclus_m-uno
-   if (dendro_active_points(i)) then
-      dendro_n_active_points=dendro_n_active_points+uno
-   endif
- enddo
- do while (dendro_n_active_points.gt.uno)
-! Look for the higher barrier
-   xmax=real(-1.,kdp)
-   do i=uno,dos*Nclus_m-uno
-     if (dendro_barrier(i).and. (dendro_points(i,2).gt.xmax)) then
-        dendro_active_barrier=i
-        xmax=dendro_points(i,2)
-     endif
-   enddo 
-! Look for the nearest active points at left and right
-   dminleft=maxr
-   dminright=maxr
-   do i=uno,dos*Nclus_m-uno
-     if (dendro_active_points(i)) then
-        if ((dendro_points(i,1).lt.dendro_points(dendro_active_barrier,1))) then
-          if ((dendro_points(dendro_active_barrier,1)-dendro_points(i,1)).lt.dminleft) then
-            dminleft=dendro_points(dendro_active_barrier,1)-dendro_points(i,1) 
-            dendro_left_nearest=i
-          endif
-       else
-         if ((dendro_points(i,1)-dendro_points(dendro_active_barrier,1)).lt.dminright) then
-            dminright=dendro_points(i,1)-dendro_points(dendro_active_barrier,1)
-            dendro_right_nearest=i
-          endif
-       endif
+ do i=1,Nclus_m-1
+   tojoin=minloc(Dend_dist)
+   Narrow=Narrow+1
+   write (23,3333) Narrow,dendcoord(tojoin(1),1),dendcoord(tojoin(1),2),dendcoord(tojoin(1),1),Fmax-Dend_dist(tojoin(1),tojoin(2)),linew
+   Narrow=Narrow+1
+   write (23,3333) Narrow,dendcoord(tojoin(2),1),dendcoord(tojoin(2),2),dendcoord(tojoin(2),1),Fmax-Dend_dist(tojoin(1),tojoin(2)),linew
+   Narrow=Narrow+1
+   write (23,3333) Narrow,dendcoord(tojoin(1),1),Fmax-Dend_dist(tojoin(1),tojoin(2)),dendcoord(tojoin(2),1),Fmax-Dend_dist(tojoin(1),tojoin(2)),linew
+! Update distance matrix and coordinates
+   dendcoord(tojoin(1),1)=(dendcoord(tojoin(1),1)+dendcoord(tojoin(2),1))/2.
+   dendcoord(tojoin(1),2)=Fmax-Dend_dist(tojoin(1),tojoin(2))
+   last_barrier=Fmax-Dend_dist(tojoin(1),tojoin(2))
+   do j=1,Nclus_m
+     if ((j.ne.tojoin(1)).and.(j.ne.tojoin(2))) then
+       Dend_dist(tojoin(1),j)=min(Dend_dist(tojoin(1),j),Dend_dist(tojoin(2),j))
+       Dend_dist(j,tojoin(1))=Dend_dist(tojoin(1),j)
      endif
    enddo
-   width=real(2.,kdp)
-   dendro_width(:)=width
-   
-! Write coordinates
-
-   Narrow=Narrow+uno
-   write (21,3333) Narrow,dendro_points(dendro_left_nearest,1),dendro_points(dendro_left_nearest,2),&
-   & dendro_points(dendro_left_nearest,1),dendro_points(dendro_active_barrier,2),dendro_width(dendro_left_nearest)
-   Narrow=Narrow+uno
-   write (21,3333) Narrow,dendro_points(dendro_left_nearest,1),dendro_points(dendro_active_barrier,2),&
-   & dendro_points(dendro_right_nearest,1),dendro_points(dendro_active_barrier,2),width
-   Narrow=Narrow+uno
-   write (21,3333) Narrow,dendro_points(dendro_right_nearest,1),dendro_points(dendro_active_barrier,2),&
-   & dendro_points(dendro_right_nearest,1),dendro_points(dendro_right_nearest,2),dendro_width(dendro_right_nearest)
-
-   if (dendro_label(dendro_left_nearest).ne."   ") write (22,*) dendro_points(dendro_left_nearest,1),dendro_points(dendro_left_nearest,2),dendro_label(dendro_left_nearest)
-   if(dendro_label(dendro_right_nearest).ne."   ") write (22,*) dendro_points(dendro_right_nearest,1),dendro_points(dendro_right_nearest,2),dendro_label(dendro_right_nearest)
-
-! update barrier list and dendro_active_points and densities and errors
-   dendro_active_points(dendro_left_nearest)=.false.
-   dendro_active_points(dendro_right_nearest)=.false.
-   dendro_active_points(dendro_active_barrier)=.true.
-   dendro_width(dendro_active_barrier)=width
-   if ((dendro_density(dendro_left_nearest)-dendro_error(dendro_left_nearest)).gt.(dendro_density(dendro_right_nearest)-dendro_error(dendro_right_nearest))) then
-     dendro_density(dendro_active_barrier)=dendro_density(dendro_left_nearest)
-     dendro_error(dendro_active_barrier)=dendro_error(dendro_left_nearest)
-   else
-     dendro_density(dendro_active_barrier)=dendro_density(dendro_right_nearest)
-     dendro_error(dendro_active_barrier)=dendro_error(dendro_right_nearest)
-   endif
-   dendro_barrier(dendro_active_barrier)=.false.
-! count of active points
-   dendro_n_active_points=0
-   do i=uno,dos*Nclus_m-uno
-     if (dendro_active_points(i)) dendro_n_active_points=dendro_n_active_points+uno
+   do j=1,Nclus_m
+     Dend_dist(tojoin(2),j)=Fmax+1
+     Dend_dist(j,tojoin(2))=Dend_dist(tojoin(2),j)
    enddo
  enddo
- do i=uno,dos*Nclus_m-uno
-   if (dendro_active_points(i)) k=i
- enddo
- Narrow=Narrow+uno
- last_barrier=dendro_points(k,2)
- maxdens=maxval(Rho(:))
- hdendro=(maxdens-last_barrier)/real(0.9,kdp)
- write (21,3333) Narrow,dendro_points(k,1),dendro_points(k,2),dendro_points(k,1),dendro_points(k,2)-real(0.05,kdp)*hdendro,2.
-! write (21,'(a,i6,a)') "pl [0:",Nele,"] [0:] 'Dendrogram_labels_2.dat' u 1:2:3 w p pt 7 ps 2 lc palette z t '','' u 1:2:3 w labels t ''"
- write (21,'(a,i6,a,es17.10,a,es17.10,a)') "pl [0:",Nele,"] [",dendro_points(k,2)-real(0.05,kdp)*hdendro,":",maxdens+real(0.05,kdp)*hdendro,"] 'Dendrogram_labels_2.dat' u 1:2:3 w p pt 7 ps 2 lc palette z t '','' u 1:2:3 w labels t ''"
-!write (23,3333) Narrow,dendro_points(k,1),dendro_points(k,2),dendro_points(k,1),-1.,width_max+1.
- close (21)
- close (22)
-! call execute_command_line("gnuplot -persists Dendrogram_graph_2.gpl")
+ 3333 FORMAT ("set arrow ",i5," from ",e14.7,",",e14.7," to ",e14.7,",",e14.7," nohead lw ",f14.7)
+  write (23,'(a,i6,a,es17.10,a,es17.10,a)') "pl [0:",Nele,"] [",last_barrier-0.1,":",Fmax+0.1,"] 'Dendrogram_labels_2.dat' u 1:2:3 w p pt 7 ps 2 lc palette z t '','' u 1:2:3 w labels t ''"
+  close (23)
+  close (24)
 !
  open (21,file="mat_labels.dat")
  open (22,file="Topography.mat")
